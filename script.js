@@ -7,6 +7,13 @@ const title = document.querySelector('.app__title');
 const botones = document.querySelectorAll('.app__card-button');
 const btnMusica = document.querySelector('#alternar-musica');
 const musicaLunaRise = new Audio('/sonidos/luna-rise-part-one.mp3');
+const musicPlay = new Audio('/sonidos/play.wav');
+const musicPause = new Audio('/sonidos/pause.mp3');
+const musicBeep = new Audio('/sonidos/beep.mp3');
+musicBeep.loop=false;
+const btnEmpezarPausar = document.querySelector('#start-pause');
+var temporizadorEnfoque = 25;
+var idIntervalo=null;
 btnCorto.addEventListener('click',()=>{
     fnCambiarContexto('descanso-corto');
     btnCorto.classList.add('active');
@@ -62,3 +69,29 @@ btnMusica.addEventListener('change',()=>{
         musicaLunaRise.pause()
     }
 })
+const cuentaRegresiva = () => {
+    if (temporizadorEnfoque<=0) {
+        musicBeep.play();
+        fnReiniciar();
+        return;
+    }
+    temporizadorEnfoque-=1;
+    console.log(temporizadorEnfoque);
+}
+btnEmpezarPausar.addEventListener('click',fnIniciarPusar);
+
+function fnIniciarPusar(){
+    if(idIntervalo){
+        musicPause.play();
+        fnReiniciar();
+        return;
+    }else{
+        musicPlay.play()
+    }
+    idIntervalo = setInterval(cuentaRegresiva,1000);
+}
+
+function fnReiniciar () {
+    clearInterval(idIntervalo);
+    idIntervalo=null;
+}
