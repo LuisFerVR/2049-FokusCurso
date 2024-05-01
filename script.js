@@ -12,24 +12,31 @@ const musicPause = new Audio('/sonidos/pause.mp3');
 const musicBeep = new Audio('/sonidos/beep.mp3');
 musicBeep.loop=false;
 const btnEmpezarPausar = document.querySelector('#start-pause');
-var temporizadorEnfoque = 25;
+const txtBtnEmpezarPausar = document.querySelector('#start-pause span');
+const imgBoton = document.querySelector('.app__card-primary-butto-icon');
+const textoTemporizadorEnPantalla = document.querySelector('#timer');
+var tiempoTranscurridoEnSegundos = 1500;
 var idIntervalo=null;
 btnCorto.addEventListener('click',()=>{
+    tiempoTranscurridoEnSegundos =300; // 5 minutos en segundos
     fnCambiarContexto('descanso-corto');
     btnCorto.classList.add('active');
 });
 
 btnEnfoque.addEventListener('click',()=>{
+    tiempoTranscurridoEnSegundos =1500;// 25 minutos en segundos
     fnCambiarContexto('enfoque');
     btnEnfoque.classList.add('active');
 });
 
 btnLargo.addEventListener('click',()=>{
+    tiempoTranscurridoEnSegundos = 900; // 15 minutos en segundos
     fnCambiarContexto('descanso-largo');
     btnLargo.classList.add('active');
 });
 
 function fnCambiarContexto(contexto){
+    fnMostrarTiempo();
     html.setAttribute('data-contexto',contexto);
     banner.setAttribute('src',`/imagenes/${contexto}.png`);
     botones.forEach((boton)=>{
@@ -70,23 +77,27 @@ btnMusica.addEventListener('change',()=>{
     }
 })
 const cuentaRegresiva = () => {
-    if (temporizadorEnfoque<=0) {
+    if (tiempoTranscurridoEnSegundos<=0) {
         musicBeep.play();
         fnReiniciar();
         return;
     }
-    temporizadorEnfoque-=1;
-    console.log(temporizadorEnfoque);
+    tiempoTranscurridoEnSegundos-=1;
+    fnMostrarTiempo();
 }
 btnEmpezarPausar.addEventListener('click',fnIniciarPusar);
 
 function fnIniciarPusar(){
     if(idIntervalo){
+        txtBtnEmpezarPausar.textContent='Empezar';
+        fnManipularAtributos(imgBoton,'src','play_arrow')
         musicPause.play();
         fnReiniciar();
         return;
     }else{
         musicPlay.play()
+        txtBtnEmpezarPausar.textContent='Pausar';
+        fnManipularAtributos(imgBoton,'src','pause')
     }
     idIntervalo = setInterval(cuentaRegresiva,1000);
 }
@@ -95,3 +106,15 @@ function fnReiniciar () {
     clearInterval(idIntervalo);
     idIntervalo=null;
 }
+
+function fnManipularAtributos(elemento,attr,value){
+    elemento.setAttribute(attr,`/imagenes/${value}.png`);
+}
+
+function fnMostrarTiempo(){
+    let tiempo = tiempoTranscurridoEnSegundos;
+    let tiempoFormteado = new Date(tiempo*1000).toLocaleString('es-MX',{minute:'2-digit',second:'2-digit'});
+    textoTemporizadorEnPantalla.innerHTML=`${tiempoFormteado}`;
+}
+
+fnMostrarTiempo();
