@@ -1,4 +1,4 @@
-<h1>Manejo del DOM: Pomodoro</h1>
+<h1> :rocket: Manejo del DOM: Pomodoro :rocket: </h1>
 
 ![Badge de estado](https://img.shields.io/badge/Terminado-status-green)
 
